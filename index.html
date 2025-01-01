@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chess Game</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.css">
+    <style>
+        /* Hide this container but keep it in DOM for the SVG sprites */
+        #pieces {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loadingScreen" class="loading-screen">
+        <h1 class="loading-title">Chess.io</h1>
+    </div>
+
+    <!-- Menu Page -->
+    <div id="menuPage" class="menu-page">
+        <h1 class="menu-title">Chess.io</h1>
+        
+        <div class="menu-container">
+            <div class="username-section">
+                <input type="text" id="player1Name" placeholder="Player 1" class="name-input">
+                <input type="text" id="player2Name" placeholder="Player 2" class="name-input">
+            </div>
+            
+            <div class="mode-selection">
+                <h2>Select Game Mode</h2>
+                <div class="mode-buttons">
+                    <button onclick="selectMode('local')" class="menu-btn">
+                        <span class="mode-icon">👥</span>
+                        <span class="mode-text">
+                            <h3>Same PC</h3>
+                            <p>Play against a friend locally</p>
+                        </span>
+                    </button>
+                    
+                    <button onclick="selectMode('ai')" class="menu-btn">
+                        <span class="mode-icon">🤖</span>
+                        <span class="mode-text">
+                            <h3>VS Computer</h3>
+                            <p>Challenge the AI</p>
+                        </span>
+                    </button>
+                    
+                    <button onclick="selectMode('online')" class="menu-btn">
+                        <span class="mode-icon">🌐</span>
+                        <span class="mode-text">
+                            <h3>Online</h3>
+                            <p>Play against players worldwide</p>
+                        </span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add SVG sprite container -->
+    <div id="pieces">
+        <svg xmlns="http://www.w3.org/2000/svg">
+            <!-- White Pieces -->
+            <symbol id="white-pawn" viewBox="0 0 45 45">
+                <path d="M22.5 9c-2.21 0-4 1.79-4 4 0 .89.29 1.71.78 2.38C17.33 16.5 16 18.59 16 21c0 2.03.94 3.84 2.41 5.03-3 1.06-7.41 5.55-7.41 13.47h23c0-7.92-4.41-12.41-7.41-13.47 1.47-1.19 2.41-3 2.41-5.03 0-2.41-1.33-4.5-3.28-5.62.49-.67.78-1.49.78-2.38 0-2.21-1.79-4-4-4z" fill="#fff" stroke="#000" stroke-width="1.5" stroke-linecap="round"/>
+            </symbol>
+            <!-- Add other piece symbols similarly -->
+        </svg>
+    </div>
+
+    <div class="container" style="display: none;">
+        <h1 class="game-title">Chess.io</h1>
+        <div class="game-modes">
+            <button onclick="setGameMode('blitz')" class="mode-btn">Blitz (5 min)</button>
+            <button onclick="setGameMode('rapid')" class="mode-btn">Rapid (10 min)</button>
+            <button onclick="setGameMode('classic')" class="mode-btn">Classic (30 min)</button>
+            <button onclick="showAIModal()" class="mode-btn ai-btn">Play vs AI</button>
+            <button onclick="showMultiplayerModal()" class="mode-btn multiplayer-btn">Play Online</button>
+        </div>
+
+        <!-- Multiplayer Modal -->
+        <div id="multiplayerModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>Play Online</h2>
+                <div class="multiplayer-options">
+                    <button onclick="createRoom()" class="modal-btn">Create Room</button>
+                    <div class="join-room">
+                        <input type="text" id="roomInput" placeholder="Enter Room ID">
+                        <button onclick="joinRoom()" class="modal-btn">Join Room</button>
+                    </div>
+                </div>
+                <div id="roomInfo" class="room-info" style="display: none;">
+                    <p>Room ID: <span id="roomId"></span></p>
+                    <p>Share this ID with your opponent</p>
+                    <button onclick="copyRoomId()" class="modal-btn">Copy Room ID</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- AI Mode Modal -->
+        <div id="aiModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>Play Against AI</h2>
+                <div class="ai-options">
+                    <div class="color-choice">
+                        <h3>Choose Your Color</h3>
+                        <div class="color-buttons">
+                            <button onclick="setPlayerColor('white')" class="modal-btn">White</button>
+                            <button onclick="setPlayerColor('black')" class="modal-btn">Black</button>
+                        </div>
+                    </div>
+                    <div class="difficulty">
+                        <h3>Select Difficulty</h3>
+                        <select id="aiLevel" class="difficulty-select">
+                            <option value="5">Quick Analysis</option>
+                            <option value="10">Medium Analysis</option>
+                            <option value="20">Deep Analysis</option>
+                        </select>
+                    </div>
+                    <button onclick="startAIGame()" class="modal-btn start-ai-game">Start Game</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="game-info">
+            <div class="timer black-timer">05:00</div>
+            <div class="current-mode">Select Game Mode</div>
+            <div class="timer white-timer">05:00</div>
+        </div>
+
+        <div id="board" class="board"></div>
+
+        <div class="controls">
+            <button onclick="startGame()" class="control-btn">Start Game</button>
+            <button onclick="resetGame()" class="control-btn">Reset</button>
+        </div>
+    </div>
+
+    <!-- Game Event Modal -->
+    <div id="gameEventModal" class="modal">
+        <div class="modal-content event-modal">
+            <div class="event-header">
+                <h2 id="eventTitle"></h2>
+                <span class="close-event">&times;</span>
+            </div>
+            <div class="event-message" id="eventMessage"></div>
+            <div class="event-actions">
+                <button onclick="closeEventModal()" class="modal-btn">OK</button>
+                <button onclick="resetGame()" class="modal-btn">New Game</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Multiplayer Disconnect Modal -->
+    <div id="disconnectModal" class="modal">
+        <div class="modal-content event-modal">
+            <div class="event-header">
+                <h2>Player Disconnected</h2>
+                <span class="close-event">&times;</span>
+            </div>
+            <div class="event-message">
+                <p>Your opponent has left the game.</p>
+                <p>Would you like to:</p>
+            </div>
+            <div class="event-actions disconnect-actions">
+                <button onclick="waitForNewPlayer()" class="modal-btn">Wait for New Player</button>
+                <button onclick="findNewGame()" class="modal-btn">Find New Game</button>
+                <button onclick="exitToMenu()" class="modal-btn">Exit to Menu</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stockfish.js/10.0.2/stockfish.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="script.js"></script>
+</body>
+</html> 
