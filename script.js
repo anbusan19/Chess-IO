@@ -357,8 +357,22 @@ function makeAIMove(move) {
 function handleGameOver() {
     if (game.in_checkmate()) {
         const winner = game.turn() === 'w' ? 'Black' : 'White';
+        if (isMultiplayerGame && currentRoom) {
+            socket.emit('gameEnd', {
+                roomId: currentRoom,
+                result: 'checkmate',
+                winner: winner
+            });
+        }
         showGameEventModal('Checkmate!', `${winner} wins! Would you like to start a new game?`);
     } else if (game.in_draw()) {
+        if (isMultiplayerGame && currentRoom) {
+            socket.emit('gameEnd', {
+                roomId: currentRoom,
+                result: 'draw',
+                winner: null
+            });
+        }
         showGameEventModal('Game Over', 'The game is a draw! Would you like to start a new game?');
     }
 }
@@ -460,12 +474,28 @@ function findNewGame() {
 }
 
 function exitToMenu() {
+    // Check if game is in progress
+    if (!game.game_over() && !isGameFinished() && 
+        !confirm('Are you sure you want to quit the current game?')) {
+        return;
+    }
+
     // Reset everything and go back to main menu
     resetGame();
     isMultiplayerGame = false;
+    isAIGame = false;
     currentRoom = null;
+    
+    // Hide all modals
     document.getElementById('disconnectModal').style.display = 'none';
     document.getElementById('roomInfo').style.display = 'none';
+    document.getElementById('aiModal').style.display = 'none';
+    document.getElementById('multiplayerModal').style.display = 'none';
+    document.getElementById('gameEventModal').style.display = 'none';
+
+    // Hide game container and show menu
+    document.querySelector('.container').style.display = 'none';
+    document.getElementById('menuPage').style.display = 'flex';
 } 
 
 function selectMode(mode) {
@@ -490,3 +520,12 @@ function selectMode(mode) {
             break;
     }
 } 
+
+// Add socket event listener for game over
+socket.on('gameOver', ({ result, winner }) => {
+    if (result === 'checkmate') {
+        showGameEventModal('Checkmate!', `${winner} wins! Would you like to start a new game?`);
+    } else if (result === 'draw') {
+        showGameEventModal('Game Over', 'The game is a draw! Would you like to start a new game?');
+    }
+}); 

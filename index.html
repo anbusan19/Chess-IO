@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chess Game</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.css">
     <style>
@@ -24,18 +25,13 @@
         <h1 class="menu-title">Chess.io</h1>
         
         <div class="menu-container">
-            <div class="username-section">
-                <input type="text" id="player1Name" placeholder="Player 1" class="name-input">
-                <input type="text" id="player2Name" placeholder="Player 2" class="name-input">
-            </div>
-            
             <div class="mode-selection">
-                <h2>Select Game Mode</h2>
+                <h2 class="mode-heading">Select Game Mode</h2>
                 <div class="mode-buttons">
                     <button onclick="selectMode('local')" class="menu-btn">
                         <span class="mode-icon">👥</span>
                         <span class="mode-text">
-                            <h3>Same PC</h3>
+                            <h3 class="mode-title">Same PC</h3>
                             <p>Play against a friend locally</p>
                         </span>
                     </button>
@@ -43,7 +39,7 @@
                     <button onclick="selectMode('ai')" class="menu-btn">
                         <span class="mode-icon">🤖</span>
                         <span class="mode-text">
-                            <h3>VS Computer</h3>
+                            <h3 class="mode-title">vs Computer</h3>
                             <p>Challenge the AI</p>
                         </span>
                     </button>
@@ -51,7 +47,7 @@
                     <button onclick="selectMode('online')" class="menu-btn">
                         <span class="mode-icon">🌐</span>
                         <span class="mode-text">
-                            <h3>Online</h3>
+                            <h3 class="mode-title">Online</h3>
                             <p>Play against players worldwide</p>
                         </span>
                     </button>
@@ -72,6 +68,9 @@
     </div>
 
     <div class="container" style="display: none;">
+        <div class="exit-container">
+            <button class="exit-btn" onclick="exitToMenu()">×</button>
+        </div>
         <h1 class="game-title">Chess.io</h1>
         <div class="game-modes">
             <button onclick="setGameMode('blitz')" class="mode-btn">Blitz (5 min)</button>
@@ -117,9 +116,9 @@
                     <div class="difficulty">
                         <h3>Select Difficulty</h3>
                         <select id="aiLevel" class="difficulty-select">
-                            <option value="5">Quick Analysis</option>
-                            <option value="10">Medium Analysis</option>
-                            <option value="20">Deep Analysis</option>
+                            <option value="5">Easy</option>
+                            <option value="10">Medium</option>
+                            <option value="15">Hard</option>
                         </select>
                     </div>
                     <button onclick="startAIGame()" class="modal-btn start-ai-game">Start Game</button>

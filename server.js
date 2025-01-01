@@ -43,6 +43,11 @@ io.on('connection', (socket) => {
         socket.to(roomId).emit('opponentMove', move);
     });
 
+    // Handle game end events
+    socket.on('gameEnd', ({ roomId, result, winner }) => {
+        io.to(roomId).emit('gameOver', { result, winner });
+    });
+
     // Handle disconnection
     socket.on('disconnect', () => {
         rooms.forEach((room, roomId) => {
