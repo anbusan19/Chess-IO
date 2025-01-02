@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const app = express();
 const http = require('http').createServer(app);
@@ -8,6 +9,13 @@ const io = require('socket.io')(http, {
     }
 });
 const path = require('path');
+
+// Make API token available to client
+app.get('/api/config', (req, res) => {
+    res.json({
+        lichessToken: process.env.LICHESS_API_TOKEN
+    });
+});
 
 app.use(express.static(path.join(__dirname, '/')));
 

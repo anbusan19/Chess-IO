@@ -27,7 +27,21 @@ let isMultiplayerGame = false;
 let isAIGame = false;
 let playerSide = 'white';
 let aiLevel = 1;
-const LICHESS_API_TOKEN = 'lip_lAjJ1aPmRgmz7ynO2Ejv';
+let LICHESS_API_TOKEN = null;
+
+// Fetch API token when needed
+async function getLichessToken() {
+    if (!LICHESS_API_TOKEN) {
+        try {
+            const response = await fetch('/api/config');
+            const config = await response.json();
+            LICHESS_API_TOKEN = config.lichessToken;
+        } catch (error) {
+            console.error('Error fetching API token:', error);
+        }
+    }
+    return LICHESS_API_TOKEN;
+}
 
 function setGameMode(mode) {
     currentMode = mode;
@@ -307,11 +321,12 @@ async function requestAIMove() {
     if (game.game_over()) return;
     
     try {
+        const token = await getLichessToken();
         const fen = game.fen();
         const response = await fetch('https://lichess.org/api/cloud-eval', {
             method: 'GET',
             headers: {
-                'Authorization': `Bearer ${LICHESS_API_TOKEN}`,
+                'Authorization': `Bearer ${token}`,
                 'Accept': 'application/json'
             },
             params: {
