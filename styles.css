@@ -14,6 +14,34 @@ body {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+    animation: fadeIn 0.8s ease forwards;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Animated background for game page */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, transparent 20%, #000000 80%),
+                linear-gradient(45deg, #F553FF 0%, transparent 20%),
+                linear-gradient(-45deg, #7F76FF 0%, transparent 20%);
+    opacity: 0.1;
+    animation: backgroundMove 15s linear infinite;
+    z-index: -1;
 }
 
 /* Minimalist button styles */
@@ -27,22 +55,26 @@ button {
     text-align: center;
     font-size: clamp(2.5rem, 8vw, 4.5rem);
     margin-bottom: 1.5rem;
-    background: linear-gradient(45deg, #F553FF, #7F76FF);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    color: #F8F7FF;
     letter-spacing: 3px;
-    animation: glow 2s ease-in-out infinite alternate;
+    animation: titleFloat 3s ease-in-out infinite;
+    position: relative;
 }
 
-@keyframes glow {
-    from {
-        filter: drop-shadow(0 0 2px #F553FF);
-    }
-    to {
-        filter: drop-shadow(0 0 6px #7F76FF);
-    }
+@keyframes titleFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+.game-title::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #F553FF, #7F76FF, transparent);
 }
 
 .container {
@@ -52,6 +84,23 @@ button {
     position: relative;
     opacity: 0;
     width: 90%;
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(5px);
+    border-radius: 20px;
+    box-shadow: 0 8px 32px rgba(31, 38, 135, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    animation: containerFadeIn 0.8s ease forwards;
+}
+
+@keyframes containerFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .game-modes {
@@ -60,25 +109,51 @@ button {
     gap: 10px;
     margin-bottom: 20px;
     flex-wrap: wrap;
+    animation: fadeSlideUp 0.8s ease forwards;
+    animation-delay: 0.3s;
+    opacity: 0;
 }
 
 .mode-btn {
     padding: 12px 24px;
     font-size: 16px;
     cursor: pointer;
-    background-color: #7F76FF;
+    background: rgba(127, 118, 255, 0.2);
     color: #F8F7FF;
-    border: none;
+    border: 1px solid rgba(127, 118, 255, 0.3);
     border-radius: 8px;
     transition: all 0.3s ease;
     flex: 1 1 150px;
     min-width: 150px;
+    backdrop-filter: blur(4px);
+    position: relative;
+    overflow: hidden;
 }
 
 .mode-btn:hover {
-    background-color: #AE68FF;
+    background: rgba(174, 104, 255, 0.15);
     transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 5px 15px rgba(245, 83, 255, 0.2),
+                inset 0 0 20px rgba(245, 83, 255, 0.1);
+    border-color: rgba(245, 83, 255, 0.8);
+}
+
+.mode-btn::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background-color: rgba(174, 104, 255, 0.1);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.6s ease, height 0.6s ease;
+}
+
+.mode-btn:hover::after {
+    width: 300px;
+    height: 300px;
 }
 
 .game-info {
@@ -86,11 +161,16 @@ button {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
-    background-color: rgba(174, 104, 255, 0.1);
+    background: rgba(0, 0, 0, 0.2);
     padding: 15px;
     border-radius: 12px;
     flex-wrap: wrap;
     gap: 15px;
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(127, 118, 255, 0.3);
+    animation: fadeSlideUp 0.8s ease forwards;
+    animation-delay: 0.5s;
+    opacity: 0;
 }
 
 .timer {
@@ -119,6 +199,10 @@ button {
     overflow: hidden;
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
     border: 2px solid #7F76FF;
+    animation: fadeSlideUp 0.8s ease forwards;
+    animation-delay: 0.7s;
+    opacity: 0;
+    backdrop-filter: blur(4px);
 }
 
 /* Chess board colors override */
@@ -135,26 +219,34 @@ button {
     justify-content: center;
     gap: 15px;
     margin-top: 30px;
+    animation: fadeSlideUp 0.8s ease forwards;
+    animation-delay: 0.9s;
+    opacity: 0;
 }
 
 .control-btn {
     padding: 12px 30px;
     font-size: 16px;
     cursor: pointer;
-    background-color: #AE68FF;
+    background: rgba(174, 104, 255, 0.2);
     color: #F8F7FF;
-    border: none;
+    border: 1px solid rgba(127, 118, 255, 0.3);
     border-radius: 8px;
     transition: all 0.3s ease;
     text-transform: uppercase;
     letter-spacing: 1px;
     font-weight: bold;
+    backdrop-filter: blur(4px);
+    position: relative;
+    overflow: hidden;
 }
 
 .control-btn:hover {
-    background-color: #F553FF;
+    background: rgba(245, 83, 255, 0.15);
     transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(174, 104, 255, 0.3);
+    box-shadow: 0 5px 15px rgba(245, 83, 255, 0.2),
+                inset 0 0 20px rgba(245, 83, 255, 0.1);
+    border-color: rgba(245, 83, 255, 0.8);
 }
 
 /* Additional styles for piece movement */
@@ -506,33 +598,61 @@ button {
     width: 100%;
     height: 100%;
     background-color: #000000;
+    background-image: url('./images/chess-background.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
     display: flex;
     flex-direction: column;
     align-items: center;
     padding: 20px 5%;
     z-index: 1000;
+    overflow: hidden;
+}
+
+.menu-page::before {
+    content: '';
+    position: absolute;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(to bottom,
+        rgba(0, 0, 0, 0.8) 0%,
+        rgba(0, 0, 0, 0.6) 50%,
+        rgba(0, 0, 0, 0.8) 100%);
+    opacity: 0.9;
+    animation: backgroundMove 15s linear infinite;
+    z-index: -1;
+}
+
+@keyframes backgroundMove {
+    0% { transform: translate(-50%, -50%) rotate(0deg); }
+    100% { transform: translate(-50%, -50%) rotate(360deg); }
 }
 
 .menu-title {
     font-family: 'Supercharge', sans-serif;
     font-size: clamp(3rem, 10vw, 5rem);
     color: #F8F7FF;
-    margin-bottom: clamp(30px, 5vh, 50px);
+    margin: clamp(30px, 8vh, 80px) 0;
     text-align: center;
-    animation: glowPulse 2s ease-in-out infinite alternate;
+    animation: titleFloat 3s ease-in-out infinite;
+    position: relative;
 }
 
-@keyframes glowPulse {
-    from {
-        text-shadow: 0 0 10px rgba(248, 247, 255, 0.5),
-                      0 0 20px rgba(248, 247, 255, 0.3),
-                      0 0 30px rgba(248, 247, 255, 0.2);
-    }
-    to {
-        text-shadow: 0 0 20px rgba(248, 247, 255, 0.6),
-                      0 0 30px rgba(248, 247, 255, 0.4),
-                      0 0 40px rgba(248, 247, 255, 0.3);
-    }
+@keyframes titleFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+.menu-title::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #F553FF, #7F76FF, transparent);
 }
 
 .menu-container {
@@ -541,6 +661,12 @@ button {
     display: flex;
     flex-direction: column;
     gap: 30px;
+    backdrop-filter: blur(5px);
+    background: rgba(0, 0, 0, 0.7);
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 8px 32px rgba(31, 38, 135, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .mode-heading {
@@ -570,13 +696,13 @@ button {
 
 .mode-title {
     font-family: 'Poppins', sans-serif;
-    font-weight: 500;
+    font-weight: 600;
     margin: 0;
     font-size: 20px;
     color: #F553FF;
     letter-spacing: 0.5px;
-    transition: color 0.3s ease;
-    text-transform: none;
+    transition: all 0.3s ease;
+    text-shadow: 0 0 10px rgba(245, 83, 255, 0.3);
 }
 
 .mode-buttons {
@@ -611,21 +737,23 @@ button {
     align-items: center;
     gap: 20px;
     padding: 25px;
-    background-color: transparent;
-    border: 2px solid #7F76FF;
+    background: rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 12px;
     cursor: pointer;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     width: 100%;
     position: relative;
     overflow: hidden;
+    backdrop-filter: blur(4px);
 }
 
 .menu-btn:hover {
     transform: translateY(-2px);
-    border-color: #F553FF;
-    background-color: rgba(174, 104, 255, 0.05);
-    box-shadow: 0 5px 15px rgba(245, 83, 255, 0.2);
+    border-color: rgba(245, 83, 255, 0.8);
+    background-color: rgba(0, 0, 0, 0.8);
+    box-shadow: 0 5px 15px rgba(245, 83, 255, 0.2),
+                inset 0 0 20px rgba(245, 83, 255, 0.1);
 }
 
 .menu-btn::after {
@@ -652,11 +780,13 @@ button {
     text-align: center;
     position: relative;
     z-index: 1;
-    transition: transform 0.3s ease;
+    transition: all 0.3s ease;
+    filter: drop-shadow(0 0 8px rgba(245, 83, 255, 0.5));
 }
 
 .menu-btn:hover .mode-icon {
-    transform: scale(1.2);
+    transform: scale(1.2) rotate(5deg);
+    filter: drop-shadow(0 0 12px rgba(245, 83, 255, 0.8));
 }
 
 .mode-text {
@@ -677,12 +807,15 @@ button {
     font-size: 15px;
     font-weight: 400;
     opacity: 0.8;
-    transition: opacity 0.3s ease;
+    transition: all 0.3s ease;
+    color: rgba(248, 247, 255, 0.8);
 }
 
 .menu-btn:hover .mode-text p {
     opacity: 1;
-} 
+    transform: translateX(5px);
+    color: rgba(248, 247, 255, 1);
+}
 
 .exit-container {
     position: absolute;
