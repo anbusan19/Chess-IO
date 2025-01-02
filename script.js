@@ -18,7 +18,7 @@ let player1Name = 'Player 1';
 let player2Name = 'Player 2';
 
 // Socket.io connection
-const socket = io();
+const socket = io(window.location.origin);
 let playerColor = 'white';
 let currentRoom = null;
 let isMultiplayerGame = false;
